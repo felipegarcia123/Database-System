@@ -23,6 +23,7 @@ class ventana(tk.Tk):
 
         #SQL statements
         self._SELECT = 'SELECT * FROM clients WHERE identification =%s '
+        self._ADD = 'INSERT INTO clients(name,last_name,age,email,birthday,gender,identification) VALUES(%s,%s,%s,%s,%s,%s,%s)'
         self._ACTUALIZAR = 'UPDATE person SET nombre =%s, apellido =%s, email =%s,edad = %s  WHERE id_persona =%s '
         self._ELIMINAR = 'DELETE FROM person WHERE id_persona = %s'
 
@@ -57,28 +58,35 @@ class ventana(tk.Tk):
     def addClient(self):
         self.ClearScreen()
         self.name = ttk.Label(self.frame1,text='Name',).place(x=40,y = 30)
-        self.entry_name = ttk.Entry(self.frame1).place(x=40,y=60,width=130)
+        self.entry_name = ttk.Entry(self.frame1)
+        self.entry_name.place(x=40,y=60,width=130)
 
         self.last_name = ttk.Label(self.frame1, text='Last name', ).place(x=300, y=30)
-        self.entry_last_name = ttk.Entry(self.frame1).place(x=300, y=60, width=130)
+        self.entry_last_name = ttk.Entry(self.frame1)
+        self.entry_last_name.place(x=300, y=60, width=130)
 
         self.age = ttk.Label(self.frame1,text='Age').place(x=40, y= 100)
-        self.entry_age = ttk.Entry(self.frame1).place(x = 40, y = 130)
+        self.entry_age = ttk.Entry(self.frame1)
+        self.entry_age.place(x = 40, y = 130)
 
         self.email = ttk.Label(self.frame1, text='Email').place(x=300, y=100)
-        self.entry_email = ttk.Entry(self.frame1).place(x=300, y=130)
+        self.entry_email = ttk.Entry(self.frame1)
+        self.entry_email.place(x=300, y=130)
 
         self.birth = ttk.Label(self.frame1, text='Bithday').place(x=40, y=170)
-        self.entry_birth = ttk.Entry(self.frame1).place(x=40, y=200)
+        self.entry_birth = ttk.Entry(self.frame1)
+        self.entry_birth.place(x=40, y=200)
 
         self.gender = ttk.Label(self.frame1, text='Gender').place(x=300, y=170)
-        self.entry_gender = ttk.Entry(self.frame1).place(x=300, y=200)
+        self.entry_gender = ttk.Entry(self.frame1)
+        self.entry_gender.place(x=300, y=200)
 
         self.identification = ttk.Label(self.frame1, text='Identification').place(x=40, y=240)
-        self.entry_identificaction = ttk.Entry(self.frame1).place(x=40, y=270)
+        self.entry_identificaction = ttk.Entry(self.frame1)
+        self.entry_identificaction.place(x=40, y=270)
 
         self.image = tk.PhotoImage(file='bt.png')
-        self.b_send = ttk.Button(self.frame1,image=self.image,cursor="hand2").place(x=200,y=320)
+        self.b_send = ttk.Button(self.frame1,image=self.image,cursor="hand2", command=self.addNewClient).place(x=200,y=320)
 
     #Show the info of the client from your phone number
 
@@ -98,7 +106,7 @@ class ventana(tk.Tk):
         self.getInfo_entry = ttk.Entry(self.frame1).place(x=163, y=110, width=200, height=30)
         self.getInfo_entry
         self.image = tk.PhotoImage(file='bt.png')
-        self.b_send2 = ttk.Button(self.frame1, image=self.image, cursor="hand2").place(x=220, y=150)
+        self.b_send2 = ttk.Button(self.frame1, image=self.image, cursor="hand2",co).place(x=220, y=150)
 
     def deleteClient(self):
         self.ClearScreen()
@@ -194,6 +202,42 @@ class ventana(tk.Tk):
 
         iden = ttk.Label(self.frame1, text='Identification').place(x=40, y=240)
         iden_data = ttk.Label(self.frame1, text=row[7]).place(x=40, y=270)
+    def addNewClient(self):
+        if self.entry_name.get() == "" or self.entry_last_name.get() == "" or self.entry_age.get() =="" or self.entry_email.get() == "" or self.entry_birth.get() == "" or self.entry_gender.get() ==""or self.entry_identificaction.get() =="":
+            messagebox.showerror('Error !','Sorry! But you must complete al fields',parent = self)
+        else:
+            try:
+                with self.getConextion() as con:
+                    with con.cursor() as cur:
+                        cur.execute(self._SELECT,(self.entry_identificaction.get(),))
+                        row = cur.fetchone()
+
+                        if row == None:
+                            cur.execute(self._ADD,(
+                                self.entry_name.get(),
+                                self.entry_last_name.get(),
+                                self.entry_age.get(),
+                                self.entry_email.get(),
+                                self.entry_birth.get(),
+                                self.entry_gender.get(),
+                                self.entry_identificaction.get()
+                            ))
+                            messagebox.showinfo('Donde','The data has been submited to DB')
+                            self.resetValues()
+                        else:
+                            messagebox.showinfo('Error !','This id is alre  dy exists, try again with other  number',parent = self)
+            except Exception as e:
+                messagebox.showerror("Error !",f"Error due to {str(e)}",parent=self)
+    def resetValues(self):
+        self.entry_name.delete(0,tk.END)
+        self.entry_last_name.delete(0,tk.END)
+        self.entry_age.delete(0,tk.END)
+        self.entry_email.delete(0,tk.END)
+        self.entry_birth.delete(0,tk.END)
+        self.entry_gender.delete(0,tk.END)
+        self.entry_identificaction.delete(0,tk.END)
+
+
 
 
 
