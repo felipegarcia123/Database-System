@@ -339,7 +339,7 @@ class Window(tk.Tk):
         id_data = ttk.Label(self.frame1, text=row[7]).place(x=40, y=270)
 
         self.image = tk.PhotoImage(file='bt.png')
-        self.b_send = ttk.Button(self.frame1, image=self.image, cursor="hand2"command=partial(self.updateDetails, row)).place(x=200, y=320)
+        self.b_send = ttk.Button(self.frame1, image=self.image, cursor="hand2",command=partial(self.updateDetails, row)).place(x=200, y=320)
 
     """
         This function updates contact details in a database and displays error messages if required
