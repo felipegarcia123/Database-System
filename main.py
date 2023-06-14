@@ -11,7 +11,7 @@ class Window(tk.Tk):
         super().__init__()
         self.geometry('780x480')
         self.config(bg="white")
-        self.title('BD')
+        self.title('Bata Base Clients')
 
         # Credentials Database
         self._con = None
@@ -30,20 +30,18 @@ class Window(tk.Tk):
 
         # Initialize style
         s = ttk.Style()
-        # Create style used by default for all Frames
-        s.configure('TFrame', background='green')
         s.configure('Frame1.TFrame', background='white')
         s.configure('Frame2.TFrame', background='black')
 
-        # left frame
+        # Left frame
         self.frame1 = ttk.Frame(self, style='Frame1.TFrame')
         self.frame1.place(x=0, y=0, width=540, relheight=1)
 
-        # right frame
+        # Right frame
         self.frame2 = ttk.Frame(self, style='Frame2.TFrame')
         self.frame2.place(x=540, y=0, relwidth=1, relheight=1)
 
-        # buttons
+        # Buttons
         self.b_add = ttk.Button(self.frame2, text='Add Client', cursor='hand2', command=self.addClient).place(x=68,y=60,width=100)
         self.b_show_clients = ttk.Button(self.frame2, text='Show Clients', cursor='hand2',command=self.showClient).place(x=68, y=120, width=100)
         self.b_update_clients = ttk.Button(self.frame2, text='Update Client', cursor='hand2',command=self.updateClient).place(x=68, y=180, width=100)
@@ -54,7 +52,7 @@ class Window(tk.Tk):
 
         # Components to add data
 
-        # Add componeents to view addClient
+        # Add components to view fields to addClient
 
         """
         This function creates a form for adding a new client with various fields and a button to submit
@@ -64,11 +62,11 @@ class Window(tk.Tk):
     def addClient(self):
 
         self.clearScreen()
-        self.name = ttk.Label(self.frame1, text='Name', ).place(x=40, y=30)
+        self.name = ttk.Label(self.frame1, text='Name').place(x=40, y=30)
         self.entry_name = ttk.Entry(self.frame1)
         self.entry_name.place(x=40, y=60, width=130)
 
-        self.last_name = ttk.Label(self.frame1, text='Last name', ).place(x=300, y=30)
+        self.last_name = ttk.Label(self.frame1, text='Last name').place(x=300, y=30)
         self.entry_last_name = ttk.Entry(self.frame1)
         self.entry_last_name.place(x=300, y=60, width=130)
 
@@ -100,7 +98,7 @@ class Window(tk.Tk):
     def showClient(self):
 
         self.clearScreen()
-        self.get_info = ttk.Label(self.frame1, text='Type the client\'s id to watch the onformation').place(x=120, y=70)
+        self.get_info = ttk.Label(self.frame1, text='Type the client\'s id to watch the information').place(x=120, y=70)
         self.enty_get_info = ttk.Entry(self.frame1)
         self.enty_get_info.place(x=163, y=110, width=200, height=30)
         self.image = tk.PhotoImage(file='bt.png')
@@ -138,7 +136,7 @@ class Window(tk.Tk):
         self.destroy()
         sys.exit()
 
-    # Get the conexion and cursor with the PostgresSql using with operator
+    # Get the conexion and cursor with the PostgreSql using with operator
 
     def getConextion(self):
         if self._con is None:
@@ -181,11 +179,13 @@ class Window(tk.Tk):
                         row = cur.fetchone()
                         if row == None:
                             messagebox.showerror("Error!", "ID doesn't exists", parent=self)
+                            log.error('ID alredy exist')
 
                         else:
                             self.getDetailsClient(row)
             except Exception as e:
                 messagebox.showerror('Error!', f'Error: {str(e)}', parent=self)
+
 
     # Remove all widgets from the frame 1
 
@@ -217,7 +217,7 @@ class Window(tk.Tk):
         email = ttk.Label(self.frame1, text='Email').place(x=300, y=100)
         email_data = ttk.Label(self.frame1, text=row[4]).place(x=300, y=130)
 
-        birth = ttk.Label(self.frame1, text='Bithday').place(x=40, y=170)
+        birth = ttk.Label(self.frame1, text='Birthday').place(x=40, y=170)
         birth_data = ttk.Label(self.frame1, text=row[5]).place(x=40, y=200)
 
         gender = ttk.Label(self.frame1, text='Gender').place(x=300, y=170)
@@ -233,7 +233,7 @@ class Window(tk.Tk):
 
     def addNewClient(self):
         if self.entry_name.get() == "" or self.entry_last_name.get() == "" or self.entry_age.get() == "" or self.entry_email.get() == "" or self.entry_birth.get() == "" or self.entry_gender.get() == "" or self.entry_identificaction.get() == "":
-            messagebox.showerror('Error !', 'Sorry! But you must complete al fields', parent=self)
+            messagebox.showerror('Error !', 'Sorry! But you must complete all fields', parent=self)
         else:
             try:
                 with self.getConextion() as con:
@@ -254,7 +254,7 @@ class Window(tk.Tk):
                             messagebox.showinfo('Donde', 'The data has been submited to DB')
                             self.resetValues()
                         else:
-                            messagebox.showinfo('Error !', 'This id is alredy exists, try again with other  number',
+                            messagebox.showinfo('Error !', 'This id is alredy exists, try again with other  id',
                                                 parent=self)
             except Exception as e:
                 messagebox.showerror("Error !", f"Error: {str(e)}", parent=self)
@@ -286,7 +286,7 @@ class Window(tk.Tk):
                         cur.execute(self._SELECT, (self.getInfo_entry.get(),))
                         row = cur.fetchone()
                         if row == None:
-                            messagebox.showerror("Error!", "ID doesn't exists", parent=self)
+                            messagebox.showerror("Error!", "ID doesn't exist", parent=self)
                         else:
                             self.getUpdateDetails(row)
             except Exception as e:
@@ -305,12 +305,12 @@ class Window(tk.Tk):
     def getUpdateDetails(self, row):
 
         self.clearScreen()
-        self.name = ttk.Label(self.frame1, text='Name', ).place(x=40, y=30)
+        self.name = ttk.Label(self.frame1, text='Name').place(x=40, y=30)
         self.entry_name = ttk.Entry(self.frame1)
         self.entry_name.insert(0, row[1])
         self.entry_name.place(x=40, y=60, width=130)
 
-        self.last_name = ttk.Label(self.frame1, text='Last name', ).place(x=300, y=30)
+        self.last_name = ttk.Label(self.frame1, text='Last name').place(x=300, y=30)
         self.entry_last_name = ttk.Entry(self.frame1)
         self.entry_last_name.insert(0, row[2])
         self.entry_last_name.place(x=300, y=60, width=130)
@@ -352,7 +352,7 @@ class Window(tk.Tk):
     def updateDetails(self, row):
 
         if self.entry_name.get() == "" or self.entry_last_name.get() == "" or self.entry_age.get() == "" or self.entry_email.get() == "" or self.entry_birth.get() == "" or self.entry_gender.get() == "":
-            messagebox.showerror('Error !', 'Sorry! But you must complete al fields', parent=self)
+            messagebox.showerror('Error !', 'Sorry! But you must complete all fields', parent=self)
         else:
             try:
                 with self.getConextion() as con:
@@ -360,7 +360,7 @@ class Window(tk.Tk):
                         cur.execute(self._SELECT, (row[7],))
                         row = cur.fetchone()
                         if row == None:
-                            messagebox.showerror("Error!", "Contact number doesn't exists", parent=self)
+                            messagebox.showerror("Error!", "ID doesn't exist", parent=self)
                         else:
                             cur.execute(self._UPDATE, (
                                 self.entry_name.get(),
@@ -392,7 +392,7 @@ class Window(tk.Tk):
                         cur.execute(self._SELECT, (self.getInfo_entry.get(),))
                         row = cur.fetchone()
                         if row == None:
-                            messagebox.showerror("Error!", "Contact number doesn't exists", parent=self)
+                            messagebox.showerror("Error!", "ID doesn't exists", parent=self)
                         else:
                             cur.execute(self._DELETE, (self.getInfo_entry.get(),))
                             messagebox.showinfo('Done!', "The data has been deleted")
@@ -405,6 +405,8 @@ class Window(tk.Tk):
     method. The `if __name__ == '__main__':` statement ensures that the code inside it only runs if the
     script is being run directly and not being imported as a module.
 '''
+
+#Main method
 
 if __name__ == '__main__':
     v = Window()
